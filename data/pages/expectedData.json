@@ -1,0 +1,32 @@
+{
+  "url": "https://www.saucedemo.com/",
+  "login": {
+    "title": "Swag Labs",
+    "header": "Swag Labs",
+    "section": null,
+    "elements": [{
+      "form": {
+        "username": "standard_user",
+        "password": "secret_sauce",
+        "button": "login"
+      }
+    }]
+  },
+  "products": {
+    "title": "Swag Labs",
+    "header": "Swag Labs",
+    "section": "Products",
+    "elements": [{
+      "filter": {
+        "username": "",
+        "password": "secret_sauce",
+        "button": "login"
+      }
+    }, {
+      "cart": {
+        "link": "",
+        "counter": "2"
+      }
+    }]
+  }
+}
