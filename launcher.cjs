@@ -44,3 +44,29 @@
 // lancher.run()
 // console.log("test print")
 // perfectly working code! Keep it!
+
+async function runTests() {
+  const Launcher = require('@wdio/cli').Launcher
+  let exitCode = null;
+  console.log("test print")
+  const ccOpts = {
+    cucumberOpts: {
+      dryRun: true,
+    }
+  }
+  const lancher = new Launcher('wdio.conf.ts', ccOpts)
+  console.log("lancher: " + JSON.stringify(lancher))
+  await lancher.run().then(function (code) {
+    console.log("running code of tests!");
+    exitCode = code;
+    process.exit(code);
+  }, function (error) {
+    console.error('Launcher failed to start the test', error.stacktrace);
+    process.exit(1);
+    exitCode = 1;
+  });
+  // console.log("test print")
+  // process.exit(code);
+}
+
+runTests();
