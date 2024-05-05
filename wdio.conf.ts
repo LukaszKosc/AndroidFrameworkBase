@@ -1,7 +1,8 @@
 import type { Options } from '@wdio/types'
-import { startAndroid, killAndroid, killAppium } from './utils/commons.ts';
-import expectedData from "../utils/expectedData.ts";
-import { startEmulator, stopEmulator } from './utils/emulator.ts';
+import { startEmulator, stopEmulator, stopAdb } from './utils/emulator.ts';
+
+globalThis.settings = {};
+
 export const config: Options.Testrunner = {
   //
   // ====================
@@ -42,6 +43,7 @@ export const config: Options.Testrunner = {
   // Patterns to exclude.
   exclude: [
     // 'path/to/excluded/files'
+    // "./features/**/test2.feature"
   ],
   //
   // ============
@@ -113,7 +115,7 @@ export const config: Options.Testrunner = {
   // Define all options that are relevant for the WebdriverIO instance here
   //
   // Level of logging verbosity: trace | debug | info | warn | error | silent
-  logLevel: 'info',
+  logLevel: 'trace',
   //
   // Set specific log levels per logger
   // loggers:
@@ -155,7 +157,8 @@ export const config: Options.Testrunner = {
   // commands. Instead, they hook themselves up into the test process.
   // services: [],
   services: [
-    ['appium', { "logPath": "./", command: "appium --allow-insecure chromedriver_autodownload" }],
+    ['appium', { command: "npx appium" }],
+    // ['appium', { "logPath": "./", command: "npx appium --allow-insecure chromedriver_autodownload" }],
     // ['appium', { "logPath": "./", command: "appium" }],
     // ['chromedriver']
     // ['chromedriver', {
@@ -187,7 +190,6 @@ export const config: Options.Testrunner = {
   // The only one supported by default is 'dot'
   // see also: https://webdriver.io/docs/dot-reporter
   reporters: ['spec', ['allure', { outputDir: 'allure-results' }]],
-
   //
   // If you are using Cucumber you need to specify the location of your step definitions.
   cucumberOpts: {
@@ -229,6 +231,9 @@ export const config: Options.Testrunner = {
    * @param {Array.<Object>} capabilities list of capabilities details
    */
   onPrepare: async function (config, capabilities) {
+    globalThis.settings["dryrun"] = config.cucumberOpts.dryRun;
+
+
     // await killAppium();
     // await startAndroid();
   },
@@ -242,7 +247,8 @@ export const config: Options.Testrunner = {
    * @param  {object} execArgv list of string arguments passed to the worker process
    */
   onWorkerStart: async function (cid, caps, specs, args, execArgv) {
-    await startEmulator();
+    if (globalThis.settings["dryrun"]) console.log("this is dryrun!");
+    if (!globalThis.settings["dryrun"]) await startEmulator();
   },
   /**
    * Gets executed just after a worker process has exited.
@@ -252,7 +258,10 @@ export const config: Options.Testrunner = {
    * @param  {number} retries  number of retries used
    */
   onWorkerEnd: async function (cid, exitCode, specs, retries) {
-    await stopEmulator();
+    if (!globalThis.settings["dryrun"]) {
+      await stopEmulator();
+      await stopAdb();
+    }
   },
   /**
    * Gets executed just before initialising the webdriver session and test framework. It allows you
@@ -262,8 +271,11 @@ export const config: Options.Testrunner = {
    * @param {Array.<String>} specs List of spec file paths that are to be run
    * @param {string} cid worker id (e.g. 0-0)
    */
-  // beforeSession: function (config, capabilities, specs, cid) {
-  // },
+  beforeSession: function (config, capabilities, specs, cid) {
+    console.log("that happens even before session, right?")
+    console.log("beforeSession: config: " + JSON.stringify(config))
+
+  },
   /**
    * Gets executed before test execution begins. At this point you can access to all global
    * variables like `browser`. It is the perfect place to define custom commands.
@@ -385,3 +397,4 @@ export const config: Options.Testrunner = {
   // onReload: function(oldSessionId, newSessionId) {
   // }
 }
+

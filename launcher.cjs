@@ -54,7 +54,7 @@ async function runTests() {
       dryRun: true,
     }
   }
-  const lancher = new Launcher('wdio.conf.ts', ccOpts)
+  const lancher = new Launcher('wdio.conf.ts', ccOpts);
   console.log("lancher: " + JSON.stringify(lancher))
   await lancher.run().then(function (code) {
     console.log("running code of tests!");

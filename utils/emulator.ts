@@ -18,7 +18,7 @@ export async function startEmulator() {
   const out = fs.openSync('./out.log', 'a');
   const err = fs.openSync('./err.log', 'a');
   // const result = spawn(cmd, ['-delay-adb', '-avd', 'Pixel_3a'], {
-  const result = spawn(cmd, ['-nocache', '-avd', 'Pixel_3a'], {
+  const result = spawn(cmd, ['-no-boot-anim', '-no-snapshot', '-nocache', '-avd', 'Pixel_3a'], {
     // shell: true,
     signal,
     stdio: ['ignore', out, err],
@@ -33,16 +33,18 @@ export async function startEmulator() {
 
 async function waitForEmulator() {
   let emulatorReady = false
-  while (!emulatorReady) {
+  const startTime = new Date();
+  const timeout = 60;
+  let diff = 0;
+  while (!emulatorReady && diff < timeout) {
     try {
       await delay(500);
-      // const ls = spawnSync('d:\\Tools\\Android\\sdk\\platform-tools\\adb.exe', ['shell', 'getprop', 'sys.boot_completed']);
-      // const ls = spawnSync('d:\\Tools\\Android\\sdk\\platform-tools\\adb.exe', ['wait-for-device']);
       const ls = spawnSync('d:\\Tools\\Android\\sdk\\platform-tools\\adb.exe shell dumpsys activity activities | findstr "mCurrentFocus=Window" | findstr "com.google.android.apps.nexuslauncher/com.google.android.apps.nexuslauncher.NexusLauncherActivity"', {
-        shell: true
+        shell: true,
+        timeout: 2000
       })
+
       const stdout = ls.stdout.toString()
-      // console.log("stdout: " + stdout)
       if (stdout.includes("mCurrentFocus=Window{") && stdout.includes(" u0 com.google.android.apps.nexuslauncher/com.google.android.apps.nexuslauncher.NexusLauncherActivity}")) {
         emulatorReady = true;
         console.log("emulator started")
@@ -51,6 +53,8 @@ async function waitForEmulator() {
     catch (error) {
       console.log("error: " + error)
     }
+    var endTime = new Date();
+    diff = (endTime.getTime() - startTime.getTime()) / 1000;
   }
 }
 
@@ -102,6 +106,25 @@ export async function stopEmulator() {
   //   }
   // }
   return emulatorStopped;
+}
+export async function stopAdb() {
+  console.log("stopping adb");
+  try {
+    if (emulatorPid < 0) throw new Error("Emulator was not started. Cannot stop it.");
+    const ls = spawnSync(`taskkill /F /IM adb.exe`, {
+      shell: true,
+      timeout: 2000
+    });
+    const stdout = ls.stdout.toString()
+    if (stdout.includes("SUCCESS: The process \"adb.exe\" with PID ") && stdout.includes(" has been terminated.")) {
+      console.log("killed adb.exe")
+      await delay(1000)
+    }
+
+  }
+  catch (error) {
+    console.log("error: " + error)
+  }
 }
 
 // startEmulator();
