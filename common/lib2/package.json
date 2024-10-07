@@ -1,0 +1,7 @@
+{
+  "name": "@common/lib2",
+  "type": "module",
+  "moduleResolution": "node",
+  "module": "ESNext",
+  "target": "es2022"
+}

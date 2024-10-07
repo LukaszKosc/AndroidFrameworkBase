@@ -2,7 +2,9 @@ import type { Options } from '@wdio/types'
 import { startEmulator, stopEmulator, stopAdb, stopEmu } from './utils/emulator.ts';
 import { getEmulator } from './utils/adbHelper.ts';
 globalThis.settings = {};
-import { fim } from "../common/library1.ts";
+// import { fim } from '../common/library1.ts';
+import { fim } from 'common/lib1/library1.ts';
+import { libkaFun } from "common/lib2/libka2.ts"
 
 export const config: Options.Testrunner = {
   //
@@ -209,6 +211,7 @@ export const config: Options.Testrunner = {
    */
   onPrepare: async function (config, capabilities) {
     fim();
+    libkaFun()
     globalThis.settings["dryrun"] = config.cucumberOpts.dryRun;
 
 

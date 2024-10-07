@@ -14,8 +14,7 @@
     "appium-uiautomator2-driver": "3.7.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5",
-    "wdio-chromedriver-service": "^8.0.0",
-    "common": "file:../common/*.ts"
+    "wdio-chromedriver-service": "^8.0.0"
   },
   "scripts": {
     "wdio": "wdio run ./wdio.conf.ts",
@@ -24,6 +23,7 @@
   "dependencies": {
     "appium-adb": "^12.0.9",
     "appium-doctor": "^1.16.2",
-    "assert": "^2.1.0"
+    "assert": "^2.1.0",
+    "common": "file:../common"
   }
 }
