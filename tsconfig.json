@@ -3,13 +3,7 @@
     "moduleResolution": "node",
     "module": "ESNext",
     "target": "es2022",
-    "types": [
-      "node",
-      "@wdio/globals/types",
-      "expect-webdriverio",
-      "@wdio/cucumber-framework",
-      "@wdio/appium-service"
-    ],
+
     "skipLibCheck": true,
     "noEmit": true,
     "allowImportingTsExtensions": true,
@@ -20,14 +14,5 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true
-  },
-  "include": [
-    "page-object-model",
-    "page-object-model/**/*.ts",
-    "step-defs",
-    "step-defs/**/*.ts",
-    "utils",
-    "utils/**/*.ts",
-    "wdio.conf.ts"
-  ]
+  }
 }

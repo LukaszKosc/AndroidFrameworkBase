@@ -5,14 +5,17 @@ const acceptAllLocator = "#L2AGLb";
 const searchInputLocator = "textarea[name='q']";
 import expectedData from "../utils/expectedData.ts";
 import { pages } from "../utils/commons.ts";
-const theInternet = new SauceLabs(expectedData["url"]);
+const theInternet = new SauceLabs("https://saucelabs.com/");
+
+
 
 Given(/^page is open$/, async () => {
   await theInternet.openUrl();
-  await theInternet.waitForTitle('Swag Labs');
+  await theInternet.waitForTitle('Sauce Labs: Cross Browser Testing, Selenium Testing & Mobile Testing');
 })
 
 Then(/^login with following credentials$/, async (dataTable: DataTable) => {
+  await theInternet.skipCookies();
   await theInternet.login(dataTable.raw()[0][0], dataTable.raw()[0][1]);
   // const expectedSection = "Products";
   // assert.equal(await theInternet.sectionIsPresent(expectedSection), expectedSection, `'${expectedSection} was not found in the page.`);

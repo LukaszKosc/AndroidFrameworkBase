@@ -12,6 +12,11 @@ class SauceLabs extends Page {
     super(url);
   }
 
+  async skipCookies() {
+    const cookiesLocator = "[id='onetrust-accept-btn-handler']";
+    await this.waitUntilDisplayed(cookiesLocator);
+    await (await $(cookiesLocator)).click();
+  }
   async login(username: string, password: string) {
     await this.insertText(usernameFieldLocator, username);
     await this.insertText(passwordFieldLocator, password);

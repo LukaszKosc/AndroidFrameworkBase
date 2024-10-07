@@ -108,7 +108,7 @@ export async function stopEmulator() {
   return emulatorStopped;
 }
 export async function stopAdb() {
-  console.log("stopping adb");
+  console.log("stopping adb1");
   try {
     if (emulatorPid < 0) throw new Error("Emulator was not started. Cannot stop it.");
     const ls = spawnSync(`taskkill /F /IM adb.exe`, {
@@ -119,6 +119,25 @@ export async function stopAdb() {
     if (stdout.includes("SUCCESS: The process \"adb.exe\" with PID ") && stdout.includes(" has been terminated.")) {
       console.log("killed adb.exe")
       await delay(1000)
+    }
+
+  }
+  catch (error) {
+    console.log("error: " + error)
+  }
+}
+
+export async function stopEmu() {
+  console.log("stopping adb here");
+  try {
+    const ls = spawnSync(`D:\\Tools\\nodejs\\node.exe D:\\Projects\\TypeScript\\FrameworkBase\\utils\\adbHelper.cjs`, {
+      shell: true,
+      timeout: 15000
+    });
+    const stdout = ls.stdout.toString()
+    if (stdout.includes("Successfully killed the 'Pixel_3a' emulator")) {
+      console.log("killed adb.exe")
+      await delay(100)
     }
 
   }

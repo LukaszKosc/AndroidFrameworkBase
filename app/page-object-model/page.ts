@@ -112,6 +112,7 @@ abstract class Page {
   }
 
   async getTitle() {
+
     return driver.getTitle();
   }
 

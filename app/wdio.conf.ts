@@ -1,7 +1,8 @@
 import type { Options } from '@wdio/types'
-import { startEmulator, stopEmulator, stopAdb } from './utils/emulator.ts';
-
+import { startEmulator, stopEmulator, stopAdb, stopEmu } from './utils/emulator.ts';
+import { getEmulator } from './utils/adbHelper.ts';
 globalThis.settings = {};
+import { fim } from "../common/library1.ts";
 
 export const config: Options.Testrunner = {
   //
@@ -69,44 +70,20 @@ export const config: Options.Testrunner = {
   //
   capabilities: [
     {
-      // capabilities for local Appium web tests on an Android Emulator
-      // platformName: "Android",
-      // browserName: 'chrome',
-      // 'goog:chromeOptions': {
-      //     args: ['headless', 'disable-gpu']
-      // }
-      platformName: "Android",
       "appium:deviceName": "Pixel_3a",
-      "appium:platformVersion": "14.0",
+      "appium:platformVersion": "15.0",
       "appium:automationName": "uiAutomator2",
+      "appium:platformName": "Android",
       "appium:browserName": "Chrome",
       'appium:appWaitPackage': 'com.android.chrome',
       'appium:appWaitActivity': 'org.chromium.chrome.browser.webapps.WebappActivity',
       'appium:appWaitDuration': 30000,
       'appium:noReset': true,
-      'appium:newCommandTimeout': 240,
+      'appium:avd': 'Pixel_3a',
+      'appium:avdArgs': '-no-boot-anim -no-snapshot -nocache',
+      'appium:avdLaunchTimeout': 60000,
+      "appium:avdReadyTimeout": 30000
     }
-
-
-    // Below code works well - starting Chrome as native app - and follows with methods 'openApp(), closeApp()'
-    // {
-    //   // capabilities for local Appium web tests on an Android Emulator
-    //   // platformName: "Android",
-    //   // browserName: 'chrome',
-    //   // 'goog:chromeOptions': {
-    //   //     args: ['headless', 'disable-gpu']
-    //   // }
-
-    //   "appium:deviceName": "Pixel_3a",
-    //   "appium:platformVersion": "14.0",
-    //   "appium:automationName": "uiAutomator2",
-    //   "appium:platformName": "Android",
-    //   "appium:browserName": "Chrome",
-    //   'appium:appWaitPackage': 'com.android.chrome',
-    //   'appium:appWaitActivity': 'org.chromium.chrome.browser.webapps.WebappActivity',
-    //   'appium:appWaitDuration': 30000,
-    //   'appium:noReset': true
-    // }
   ],
   //
   // ===================
@@ -157,8 +134,8 @@ export const config: Options.Testrunner = {
   // commands. Instead, they hook themselves up into the test process.
   // services: [],
   services: [
-    ['appium', { command: "npx appium" }],
-    // ['appium', { "logPath": "./", command: "npx appium --allow-insecure chromedriver_autodownload" }],
+    // ['appium', { command: "npx appium" }],
+    ['appium', { "logPath": "./", command: "npx appium --allow-insecure chromedriver_autodownload" }],
     // ['appium', { "logPath": "./", command: "appium" }],
     // ['chromedriver']
     // ['chromedriver', {
@@ -231,6 +208,7 @@ export const config: Options.Testrunner = {
    * @param {Array.<Object>} capabilities list of capabilities details
    */
   onPrepare: async function (config, capabilities) {
+    fim();
     globalThis.settings["dryrun"] = config.cucumberOpts.dryRun;
 
 
@@ -248,7 +226,7 @@ export const config: Options.Testrunner = {
    */
   onWorkerStart: async function (cid, caps, specs, args, execArgv) {
     if (globalThis.settings["dryrun"]) console.log("this is dryrun!");
-    if (!globalThis.settings["dryrun"]) await startEmulator();
+    // if (!globalThis.settings["dryrun"]) await startEmulator();
   },
   /**
    * Gets executed just after a worker process has exited.
@@ -259,8 +237,8 @@ export const config: Options.Testrunner = {
    */
   onWorkerEnd: async function (cid, exitCode, specs, retries) {
     if (!globalThis.settings["dryrun"]) {
-      await stopEmulator();
-      await stopAdb();
+      // await stopEmulator();
+      // await stopAdb();
     }
   },
   /**
@@ -387,8 +365,9 @@ export const config: Options.Testrunner = {
    * @param {Array.<Object>} capabilities list of capabilities details
    * @param {<Object>} results object containing test results
    */
-  // onComplete: function (exitCode, config, capabilities, results) {
-  // },
+  onComplete: async function (exitCode, config, capabilities, results) {
+    await stopEmu();
+  },
   /**
   * Gets executed when a refresh happens.
   * @param {string} oldSessionId session ID of the old session

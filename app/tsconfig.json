@@ -1,0 +1,19 @@
+{
+  "extends": "../tsconfig.json",
+  "types": [
+    "node",
+    "@wdio/globals/types",
+    "expect-webdriverio",
+    "@wdio/cucumber-framework",
+    "@wdio/appium-service"
+  ],
+  "include": [
+    "app/page-object-model",
+    "app/page-object-model/**/*.ts",
+    "app/step-defs",
+    "app/step-defs/**/*.ts",
+    "app/utils",
+    "app/utils/**/*.ts",
+    "app/wdio.conf.ts"
+  ]
+}
