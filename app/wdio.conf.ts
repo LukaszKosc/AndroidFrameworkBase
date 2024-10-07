@@ -3,8 +3,9 @@ import { startEmulator, stopEmulator, stopAdb, stopEmu } from './utils/emulator.
 import { getEmulator } from './utils/adbHelper.ts';
 globalThis.settings = {};
 // import { fim } from '../common/library1.ts';
-import { fim } from 'common/lib1/library1.ts';
-import { libkaFun } from "common/lib2/libka2.ts"
+import { fim } from 'lib1/library1.ts';
+import { fim_lib1 } from 'lib1/lib1.ts';
+import { libkaFun } from "lib2/libka2.ts"
 
 export const config: Options.Testrunner = {
   //
@@ -211,7 +212,8 @@ export const config: Options.Testrunner = {
    */
   onPrepare: async function (config, capabilities) {
     fim();
-    libkaFun()
+    libkaFun();
+    fim_lib1();
     globalThis.settings["dryrun"] = config.cucumberOpts.dryRun;
 
 

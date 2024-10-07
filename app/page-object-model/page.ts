@@ -1,5 +1,8 @@
 import { AppState, sleep } from "../utils/commons.ts";
 import assert from "assert";
+import { fim } from 'lib1/library1.ts';
+import { fim_lib1 } from 'lib1/lib1.ts';
+import { libkaFun } from "lib2/libka2.ts"
 
 const titleLocator = ""
 
@@ -56,6 +59,9 @@ abstract class Page {
   async openUrl() {
     await driver.navigateTo(this.url)
     await this.waitForUrlLoaded(this.url);
+    fim();
+    libkaFun();
+    fim_lib1();
   }
 
   async waitForUrlLoaded(expectedUrl: string) {
